@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReelSnap - Kịch Ngắn & Phim Dọc Đỉnh Cao</title>
+    <!-- HLS.js for streaming m3u8 playlists -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #07090e;
+            --bg-surface: #0e1424;
+            --bg-card: #141c30;
+            --bg-elevated: #1b2642;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #ec4899;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            --gold: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #232f48;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 32px;
+            background: rgba(14, 20, 36, 0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #fff;
+            background: var(--bg-card);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .header-center {
+            flex: 1;
+            max-width: 480px;
+            margin: 0 20px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 42px;
+            border-radius: 999px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .select-lang {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-elevated);
+            border-color: #3b4d75;
+        }
+
+        /* VIEW CONTAINERS (HOME vs PLAYER) */
+        .view-container {
+            display: none;
+            width: 100%;
+        }
+
+        .view-container.active {
+            display: block;
+        }
+
+        /* ========================================================
+           HOME VIEW STYLES
+           ======================================================== */
+        .home-wrap {
+            max-width: 1560px;
+            margin: 0 auto;
+            padding: 24px 32px 60px;
+        }
+
+        /* HERO FEATURED BANNER */
+        .hero-banner {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: #111;
+            min-height: 400px;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+            border: 1px solid var(--border);
+            margin-bottom: 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.65);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(7,9,14,0.1) 0%, rgba(7,9,14,0.85) 75%, #07090e 100%),
+                        linear-gradient(90deg, rgba(7,9,14,0.9) 0%, rgba(7,9,14,0.5) 50%, transparent 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 700px;
+        }
+
+        .hero-badge {
+            background: var(--accent-gradient);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .hero-desc {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+        }
+
+        .btn-play-large {
+            padding: 12px 28px;
+            font-size: 1rem;
+            border-radius: 999px;
+            background: var(--accent-gradient);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+            font-weight: 700;
+        }
+
+        /* CATEGORIES BAR */
+        .genres-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 14px;
+            margin-bottom: 28px;
+            scrollbar-width: thin;
+        }
+
+        .genre-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 9px 18px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .genre-pill:hover {
+            border-color: var(--primary);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .genre-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+        }
+
+        /* SECTION HEADINGS */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title span {
+            color: var(--accent);
+        }
+
+        /* MOVIE GRID */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 22px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 14px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .header-left {
+                width: 100%;
+                justify-content: space-between;
+                gap: 8px;
+            }
+            .header-center {
+                order: 3;
+                width: 100%;
+                max-width: 100%;
+                margin: 4px 0 0;
+            }
+            .header-right {
+                order: 2;
+                gap: 6px;
+            }
+            .nav-links {
+                gap: 4px;
+            }
+            .nav-item {
+                padding: 6px 10px;
+                font-size: 0.78rem;
+            }
+            .home-wrap { padding: 12px; }
+            .hero-title { font-size: 1.4rem; }
+            .hero-banner { min-height: 280px; padding: 16px; margin-bottom: 20px; }
+            .hero-meta { flex-wrap: wrap; gap: 8px; font-size: 0.78rem; }
+            .movie-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .movie-info { padding: 8px 10px; }
+            .movie-title { font-size: 0.85rem; }
+            .player-wrap { padding: 10px; }
+            .player-stage { padding: 14px 10px; }
+            .video-container { max-width: 100%; border-radius: 12px; }
+            .control-row { padding: 8px 10px; gap: 6px; }
+            .select-custom { padding: 5px 8px; font-size: 0.75rem; }
+            .sidebar { height: auto; position: static; max-height: 380px; }
+            .episodes-grid { grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); }
+        }
+
+        .movie-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .poster-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            background: #111;
+            overflow: hidden;
+        }
+
+        .poster-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .movie-card:hover .poster-img {
+            transform: scale(1.06);
+        }
+
+        .poster-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(14, 20, 36, 0.85);
+            backdrop-filter: blur(6px);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ep-count-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        .play-hover-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            opacity: 0;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.6);
+        }
+
+        .movie-card:hover .play-hover-btn {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .movie-info {
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .movie-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-tags {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .tag-chip {
+            font-size: 0.68rem;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================================
+           PLAYER VIEW STYLES
+           ======================================================== */
+        .player-wrap {
+            max-width: 1560px;
+            margin: 0 auto;
+            padding: 20px 32px 50px;
+            width: 100%;
+        }
+
+        .player-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-home-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .back-home-btn:hover {
+            background: var(--bg-elevated);
+            border-color: var(--primary);
+            transform: translateX(-3px);
+        }
+
+        .player-layout {
+            display: grid;
+            grid-template-columns: 1fr 440px;
+            gap: 28px;
+        }
+
+        @media (max-width: 1024px) {
+            .player-layout { grid-template-columns: 1fr; }
+            .player-wrap { padding: 16px; }
+        }
+
+        /* PLAYER CONTAINER */
+        .player-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            position: relative;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 9 / 16;
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.8);
+            border: 1px solid #28375a;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* SUBTITLE STYLING - THU NHỎ CỠ CHỮ */
+        ::cue, video::cue {
+            font-size: 13px !important;
+            line-height: 1.35 !important;
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+            padding: 2px 6px !important;
+            border-radius: 4px !important;
+        }
+
+        .player-info-bar {
+            width: 100%;
+            max-width: 550px;
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .drama-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .current-drama-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        .current-episode-pill {
+            background: var(--accent-gradient);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-elevated);
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.15s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .select-custom {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .switch-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .switch-label input { accent-color: var(--primary); cursor: pointer; }
+
+        /* RIGHT: SIDEBAR */
+        .sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: calc(100vh - 120px);
+            position: sticky;
+            top: 90px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7, 9, 14, 0.5);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            border-bottom-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px;
+        }
+
+        /* EPISODES GRID */
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+            gap: 8px;
+        }
+
+        .ep-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px 0;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ep-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .ep-btn.active {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+
+        /* SPINNER & MODAL */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            animation: spin 0.8s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            padding: 24px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            z-index: 300;
+        }
+
+        /* PAGINATION STYLES */
+        .pagination-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 25px 0 45px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .pagination-info {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .pagination-info strong {
+            color: #fff;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            min-width: 38px;
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: #fff;
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .page-ellipsis {
+            color: var(--text-muted);
+            padding: 0 6px;
+            user-select: none;
+            font-weight: 700;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .action-btn-sm {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn-sm:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+    </style>
+    <style id="dynamicSubStyle">
+        ::cue, video::cue {
+            font-size: 13px !important;
+            line-height: 1.35 !important;
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+            padding: 2px 6px !important;
+            border-radius: 4px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-left">
+            <div class="logo-wrap" onclick="showView('home')">
+                <div class="logo-badge">▶</div>
+                <div class="logo-text">
+                    <h1>ReelSnap</h1>
+                    <span>Kho Phim Ngắn</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <button class="nav-item active" id="navHome" onclick="showView('home')">🏠 Trang Chủ</button>
+                <button class="nav-item" id="navRank" onclick="selectGenre('rank')">🔥 Bảng Xếp Hạng</button>
+                <button class="nav-item" id="navPlayer" onclick="showView('player')">🎬 Đang Xem</button>
+            </nav>
+        </div>
+
+        <div class="header-center">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Tìm kiếm phim, diễn viên, thể loại..." onkeydown="if(event.key==='Enter') filterBySearch()">
+            </div>
+        </div>
+
+        <div class="header-right">
+            <!-- Language Selector -->
+            <select class="select-lang" id="langSelector" onchange="changeLanguage(this.value)" title="Chọn ngôn ngữ kho phim">
+                <option value="vi-VN" selected>🇻🇳 Phim Lồng Tiếng (Việt)</option>
+                <option value="en-US">🇺🇸 Phim Quốc Tế (English)</option>
+                <option value="zh-CN">🇨🇳 Phim Trung Quốc (Giản thể)</option>
+                <option value="zh-TW">🇭🇰 Phim Phồn Thể (HK / Đài Loan)</option>
+                <option value="th-TH">🇹🇭 Phim Thái Lan (ภาษาไทย)</option>
+                <option value="ko-KR">🇰🇷 Phim Hàn Quốc (한국어)</option>
+                <option value="ja-JP">🇯🇵 Phim Nhật Bản (日本語)</option>
+                <option value="es-MX">🇪🇸 Phim Tây Ban Nha (Español)</option>
+            </select>
+            <a href="/guide" target="_blank" class="btn btn-secondary" style="text-decoration:none;" title="Xem cẩm nang hướng dẫn sử dụng API chi tiết">📖 Hướng Dẫn API</a>
+            <a href="/swagger" target="_blank" class="btn btn-secondary" style="text-decoration:none;" title="Swagger UI tương tác">📑 Swagger</a>
+            <button class="btn btn-secondary" onclick="openCustomUrlModal()">🔗 M3U8</button>
+        </div>
+    </header>
+
+    <!-- ========================================================
+         VIEW 1: HOME (KHO PHIM & THỂ LOẠI)
+         ======================================================== -->
+    <section class="view-container active" id="homeView">
+        <div class="home-wrap">
+
+            <!-- HERO FEATURED BANNER -->
+            <div class="hero-banner" id="heroBanner">
+                <img class="hero-bg" id="heroBg" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600" alt="Featured">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <span class="hero-badge" id="heroBadge">🔥 Phim Thịnh Hành Số 1</span>
+                    <h2 class="hero-title" id="heroTitle">Đang nạp phim nổi bật...</h2>
+                    <p class="hero-desc" id="heroDesc">Khám phá hàng ngàn kịch ngắn hấp dẫn với đủ mọi thể loại từ tổng tài, người sói, trọng sinh, tình cảm...</p>
+                    <div class="hero-meta">
+                        <span id="heroEpCount">📺 50 tập</span>
+                        <span id="heroTags">🏷️ Lãng mạn • Kịch tính</span>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="btn btn-play-large" id="heroPlayBtn" onclick="playCurrentHero()">▶ Xem Ngay Tập 1</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GENRE CATEGORY FILTER PILLS -->
+            <div class="genres-bar" id="genresBar">
+                <button class="genre-pill active" onclick="selectGenre('all')">🌟 Tất Cả Phim</button>
+                <button class="genre-pill" onclick="selectGenre('popular')">🔥 Phổ Biến Nhất</button>
+                <button class="genre-pill" onclick="selectGenre('rank')">🏆 Top Bảng Xếp Hạng</button>
+                <button class="genre-pill" onclick="selectGenre('new')">⚡ Mới Phát Hành</button>
+                <button class="genre-pill" onclick="selectGenre('female')">👩 Dành Cho Nữ</button>
+                <button class="genre-pill" onclick="selectGenre('male')">👨 Dành Cho Nam</button>
+                <button class="genre-pill" onclick="selectGenre('anime')">🎨 Hoạt Hình / Anime</button>
+                <button class="genre-pill" onclick="selectGenre('ceo')">👑 Tổng Tài / Đại Gia</button>
+                <button class="genre-pill" onclick="selectGenre('werewolf')">🐺 Người Sói / Ma Cà Rồng</button>
+                <button class="genre-pill" onclick="selectGenre('romance')">💖 Tình Cảm / Hôn Nhân</button>
+                <button class="genre-pill" onclick="selectGenre('rebirth')">⚔️ Trọng Sinh / Trả Thù</button>
+                <button class="genre-pill" onclick="selectGenre('family')">🏠 Bi Kịch Gia Đình</button>
+            </div>
+
+            <!-- SECTION HEADER -->
+            <div class="section-header">
+                <div>
+                    <h3 class="section-title" id="gridTitle">Kho Phim Đang Chiếu <span id="itemCountText">(Đang nạp...)</span></h3>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);" id="genreSubtitle">Bấm vào phim để xem ngay</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <!-- LOAD MORE BUTTON -->
+                    <button class="action-btn-sm" id="loadMoreBtn" onclick="loadMoreForCurrentCategory()" style="padding:7px 14px; font-weight:700;" title="Nạp thêm nhiều tập phim từ server">
+                        🔄 Nạp Thêm Phim
+                    </button>
+                    <!-- SỐ LƯỢNG TRÊN 1 TRANG -->
+                    <div class="page-size-selector">
+                        <span>Số lượng:</span>
+                        <select class="select-custom" id="pageSizeSelect" onchange="changePageSize(this.value)">
+                            <option value="12">12 phim / trang</option>
+                            <option value="24" selected>24 phim / trang</option>
+                            <option value="36">36 phim / trang</option>
+                            <option value="48">48 phim / trang</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MOVIES GRID -->
+            <div class="movie-grid" id="movieGrid">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- PHÂN TRANG (PAGINATION) -->
+            <div class="pagination-wrap" id="paginationWrap">
+                <div class="pagination-info" id="paginationInfo">Trang 1 / 1 (0 phim)</div>
+                <div class="pagination-buttons" id="paginationButtons"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 2: PLAYER (MÀN XEM PHIM)
+         ======================================================== -->
+    <section class="view-container" id="playerView">
+        <div class="player-wrap">
+            <div class="player-top-bar">
+                <button class="back-home-btn" onclick="showView('home')">
+                    ← Quay lại Trang Chủ
+                </button>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">
+                    Phím tắt: <strong>[Phím cách]</strong> Tạm dừng • <strong>[↑] [↓]</strong> Đổi tập
+                </div>
+            </div>
+
+            <div class="player-layout">
+                <!-- LEFT: VIDEO PLAYER STAGE -->
+                <div class="player-stage">
+                    <div class="video-container">
+                        <video id="videoPlayer" controls playsinline></video>
+                    </div>
+
+                    <div class="player-info-bar">
+                        <div class="drama-header-info">
+                            <div>
+                                <h2 class="current-drama-title" id="dramaTitle">Đang tải phim...</h2>
+                                <span style="font-size: 0.82rem; color: var(--text-muted);" id="dramaSubtitle">Chọn tập để bắt đầu phát</span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                <div class="current-episode-pill" id="epIndicator">Tập 1</div>
+                                <button class="action-btn-sm" onclick="shareCurrentDrama()" title="Chia sẻ tập phim">
+                                    🔗 Chia sẻ
+                                </button>
+                                <button class="action-btn-sm" onclick="downloadCurrentMp4()" title="Tải tập phim MP4 về máy">
+                                    ⬇️ Tải MP4
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="control-row">
+                            <div class="control-group">
+                                <button class="control-btn" title="Tập trước" onclick="playPrevEpisode()">⏮</button>
+                                <button class="control-btn" title="Tập sau" onclick="playNextEpisode()">⏭</button>
+                                <label class="switch-label">
+                                    <input type="checkbox" id="autoplayCheck" checked>
+                                    <span>Tự chuyển tập</span>
+                                </label>
+                            </div>
+
+                            <div class="control-group">
+                                <select class="select-custom" id="speedSelect" onchange="changeSpeed(this.value)">
+                                    <option value="0.75">0.75x</option>
+                                    <option value="1.0" selected>1.0x</option>
+                                    <option value="1.25">1.25x</option>
+                                    <option value="1.5">1.5x</option>
+                                    <option value="2.0">2.0x</option>
+                                </select>
+
+                                <select class="select-custom" id="audioTrackSelect" onchange="changeAudioTrack(this.value)" style="display:none;" title="Chọn âm thanh / lồng tiếng">
+                                    <option value="-1">🎙️ Lồng tiếng</option>
+                                </select>
+
+                                <select class="select-custom" id="subSelect" onchange="changeSubtitle(this.value)">
+                                    <option value="">Phụ đề: Tắt</option>
+                                </select>
+
+                                <select class="select-custom" id="subSizeSelect" title="Cỡ chữ phụ đề" onchange="changeSubSize(this.value)">
+                                    <option value="11">Cỡ chữ: Rất nhỏ (11px)</option>
+                                    <option value="13" selected>Cỡ chữ: Nhỏ (13px)</option>
+                                    <option value="15">Cỡ chữ: Vừa (15px)</option>
+                                    <option value="18">Cỡ chữ: Lớn (18px)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: SIDEBAR -->
+                <aside class="sidebar">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchPlayerTab('episodes')">Tập Phim</button>
+                        <button class="tab-btn" onclick="switchPlayerTab('info')">Mô Tả</button>
+                        <button class="tab-btn" onclick="switchPlayerTab('recommend')">Đề Xuất</button>
+                    </div>
+
+                    <!-- TAB 1: EPISODES -->
+                    <div class="tab-content" id="tabEpisodes">
+                        <div style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+                            <span>Tổng số tập: <strong id="totalEpCount" style="color: #fff;">0</strong></span>
+                            <span>Trượt để xem hết</span>
+                        </div>
+                        <div class="episodes-grid" id="episodesList"></div>
+                    </div>
+
+                    <!-- TAB 2: DRAMA INFO -->
+                    <div class="tab-content" id="tabInfo" style="display: none;">
+                        <div style="display: flex; gap: 14px; margin-bottom: 16px;">
+                            <img id="infoPoster" style="width: 100px; height: 133px; border-radius: 8px; object-fit: cover; background: #222;" src="" alt="Poster">
+                            <div>
+                                <h3 id="infoTitle" style="font-size: 1.05rem; margin-bottom: 6px;">Tên phim</h3>
+                                <p id="infoTags" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;"></p>
+                                <p style="font-size: 0.8rem; color: var(--primary);" id="infoCast"></p>
+                            </div>
+                        </div>
+                        <h4 style="font-size: 0.9rem; margin-bottom: 6px;">Tóm tắt nội dung:</h4>
+                        <p id="infoDesc" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;"></p>
+                    </div>
+
+                    <!-- TAB 3: RECOMMEND -->
+                    <div class="tab-content" id="tabRecommend" style="display: none;">
+                        <div id="sideRecommendList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- CUSTOM URL MODAL -->
+    <div class="modal-backdrop" id="customUrlModal">
+        <div class="modal-box">
+            <h3 style="margin-bottom: 10px;">Phát Link Video Trực Tiếp</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+                Dán đường dẫn video định dạng <strong>.m3u8 (HLS)</strong> hoặc <strong>.mp4</strong>:
+            </p>
+            <input type="text" class="modal-input" id="customUrlInput" placeholder="https://example.com/stream.m3u8" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-surface); color: #fff; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-secondary" onclick="closeCustomUrlModal()">Đóng</button>
+                <button class="btn" onclick="submitCustomUrl()">Bắt Đầu Phát</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toastMessage">Thông báo</div>
+
+    <script>
+        const video = document.getElementById('videoPlayer');
+        let hls = null;
+        let allDramas = [];
+        let filteredDramas = [];
+        let currentDrama = null;
+        let currentEpisodeIndex = 0;
+        let currentLanguage = 'vi-VN';
+        let currentGenre = 'all';
+        let featuredDrama = null;
+        let currentPage = 1;
+        let pageSize = 24;
+
+        const isLocalServer = window.location.protocol.startsWith('http');
+        const API_HOST = isLocalServer ? window.location.origin : 'http://localhost:3000';
+
+        // ----------------------------------------------------
+        // INITIALIZATION
+        // ----------------------------------------------------
+        async function init() {
+            // Check direct URL share parameters (?drama=...&ep=...)
+            const urlParams = new URLSearchParams(window.location.search);
+            const dramaParam = urlParams.get('drama');
+            const epParam = parseInt(urlParams.get('ep') || '0');
+
+            await loadCatalog();
+
+            if (dramaParam) {
+                await openAndPlayDrama(dramaParam, epParam);
+            }
+
+            video.addEventListener('ended', () => {
+                if (document.getElementById('autoplayCheck').checked) {
+                    playNextEpisode();
+                }
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (document.activeElement.tagName === 'INPUT') return;
+                if (document.getElementById('playerView').classList.contains('active')) {
+                    if (e.key === 'ArrowUp') { e.preventDefault(); playPrevEpisode(); }
+                    else if (e.key === 'ArrowDown') { e.preventDefault(); playNextEpisode(); }
+                    else if (e.key === ' ' || e.code === 'Space') {
+                        e.preventDefault();
+                        video.paused ? video.play() : video.pause();
+                    }
+                }
+            });
+        }
+
+        // ----------------------------------------------------
+        // CATEGORY MODULE CONFIG & METADATA
+        // ----------------------------------------------------
+        const categoryState = {
+            popular: { moduleKey: '1036', tabKey: '503', next: '', hasMore: true },
+            rank: { page: 1, hasMore: true },
+            new: { moduleKey: '1040', tabKey: '505', next: '', hasMore: true },
+            female: { moduleKey: '1039', tabKey: '504', next: '', hasMore: true },
+            male: { moduleKey: '1041', tabKey: '506', next: '', hasMore: true },
+            anime: { moduleKey: '2204', tabKey: '547', next: '', hasMore: true }
+        };
+
+        const categoryMeta = {
+            all: { title: 'Kho Phim Đang Chiếu', sub: 'Tất cả các bộ phim tổng hợp từ mọi danh mục và bảng xếp hạng' },
+            popular: { title: '🔥 Phim Phổ Biến Nhất', sub: 'Các bộ phim đang được xem nhiều nhất hiện nay' },
+            rank: { title: '🏆 Top Bảng Xếp Hạng', sub: 'Bảng xếp hạng phim thịnh hành hàng ngày/hàng tuần' },
+            new: { title: '⚡ Phim Mới Phát Hành', sub: 'Những bộ phim vừa mới cập bến mới nhất' },
+            female: { title: '👩 Dành Cho Nữ', sub: 'Chủ đề ngôn tình, tổng tài cưng chiều, hào môn thế gia' },
+            male: { title: '👨 Dành Cho Nam', sub: 'Chủ đề chiến thần, nghịch tập, tu chân, trọng sinh trả thù' },
+            anime: { title: '🎨 Hoạt Hình / Anime', sub: 'Phim hoạt hình 2D/3D chuyển thể kịch tính' },
+            ceo: { title: '👑 Tổng Tài / Đại Gia', sub: 'Chủ tịch giấu nghề, tỷ phú, hợp đồng hôn nhân' },
+            werewolf: { title: '🐺 Người Sói / Ma Cà Rồng', sub: 'Alpha, Luna, Vampire và thế giới siêu nhiên kỳ bí' },
+            romance: { title: '💖 Tình Cảm / Hôn Nhân', sub: 'Tình yêu trắc trở, cưới trước yêu sau, ngọt ngào' },
+            rebirth: { title: '⚔️ Trọng Sinh / Trả Thù', sub: 'Tái sinh làm lại cuộc đời, vạch mặt tra nam tiện nữ' },
+            family: { title: '🏠 Bi Kịch Gia Đình', sub: 'Mâu thuẫn mẹ chồng nàng dâu, huyết thống gia tộc' }
+        };
+
+        function addOrUpdateDrama(map, raw, categoryTag) {
+            if (!raw) return;
+            const id = raw.id || raw.key;
+            if (!id) return;
+            const idStr = String(id);
+
+            const title = raw.name || raw.title || raw.series_title || '';
+            const cover = raw.cover || raw.cover_vertical || raw.image || '';
+            const desc = raw.desc || raw.introduction || '';
+            const epCount = raw.episode_count || raw.total_episodes || 0;
+
+            let rawTags = raw.tags || raw.series_tag || raw.tag_names || [];
+            let tags = [];
+            if (Array.isArray(rawTags)) {
+                tags = rawTags.map(t => {
+                    if (typeof t === 'string') return t;
+                    if (t && t.name) return t.name;
+                    if (t && t.title) return t.title;
+                    return '';
+                }).filter(Boolean);
+            }
+
+            if (!map.has(idStr)) {
+                map.set(idStr, {
+                    id: idStr,
+                    name: title,
+                    cover: cover,
+                    desc: desc,
+                    episode_count: epCount,
+                    tags: tags,
+                    categories: new Set(categoryTag ? [categoryTag] : [])
+                });
+            } else {
+                const existing = map.get(idStr);
+                if (!existing.cover && cover) existing.cover = cover;
+                if (!existing.desc && desc) existing.desc = desc;
+                if (!existing.episode_count && epCount) existing.episode_count = epCount;
+                if (tags.length > 0 && (!existing.tags || existing.tags.length === 0)) existing.tags = tags;
+                if (categoryTag) existing.categories.add(categoryTag);
+            }
+        }
+
+        // ----------------------------------------------------
+        // LOAD COMPLETE DRAMA CATALOG
+        // ----------------------------------------------------
+        async function loadCatalog() {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '<div class="spinner"></div>';
+            const pageWrap = document.getElementById('paginationWrap');
+            if (pageWrap) pageWrap.style.display = 'none';
+
+            // Reset category state
+            categoryState.rank.page = 3;
+            categoryState.rank.hasMore = true;
+            categoryState.popular.next = '';
+            categoryState.popular.hasMore = true;
+            categoryState.new.next = '';
+            categoryState.new.hasMore = true;
+            categoryState.female.next = '';
+            categoryState.female.hasMore = true;
+            categoryState.male.next = '';
+            categoryState.male.hasMore = true;
+            categoryState.anime.next = '';
+            categoryState.anime.hasMore = true;
+
+            try {
+                // Fetch rank, hot-list, tab indexes (including 622 with 240 dramas) and initial feeds
+                const [
+                    rank1, rank2,
+                    hot1, hot2,
+                    tabPopular, tabNew, tabComingSoon, tabFemale, tabMale, tabAnime,
+                    feedPopular, feedFemale, feedNew, feedMale
+                ] = await Promise.all([
+                    fetch(`${API_HOST}/api/rank?page=1&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/rank?page=2&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/hot-list?page=1&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/hot-list?page=2&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/tab-index?tab_key=503&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/tab-index?tab_key=505&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/tab-index?tab_key=622&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/tab-index?tab_key=504&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/tab-index?tab_key=506&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/tab-index?tab_key=547&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/feed?module_key=1036&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/feed?module_key=1039&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/feed?module_key=1040&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                    fetch(`${API_HOST}/api/feed?module_key=1041&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({}))
+                ]);
+
+                const map = new Map();
+
+                // Process Rank
+                [rank1, rank2].forEach(res => {
+                    if (res.data && Array.isArray(res.data.items)) {
+                        res.data.items.forEach(d => addOrUpdateDrama(map, d, 'rank'));
+                    }
+                });
+
+                // Process Hot list
+                [hot1, hot2].forEach(res => {
+                    if (res.data && Array.isArray(res.data.items)) {
+                        res.data.items.forEach(d => addOrUpdateDrama(map, d, 'popular'));
+                    }
+                });
+
+                // Process Tabs (data.items contains modules, each module has items)
+                const processTab = (res, catTag) => {
+                    if (res.data && Array.isArray(res.data.items)) {
+                        res.data.items.forEach(mod => {
+                            if (mod && Array.isArray(mod.items)) {
+                                mod.items.forEach(d => addOrUpdateDrama(map, d, catTag));
+                            }
+                        });
+                    }
+                };
+
+                processTab(tabPopular, 'popular');
+                processTab(tabNew, 'new');
+                processTab(tabComingSoon, 'new');
+                processTab(tabFemale, 'female');
+                processTab(tabMale, 'male');
+                processTab(tabAnime, 'anime');
+
+                // Process Feeds
+                if (feedPopular.data && Array.isArray(feedPopular.data.items)) {
+                    feedPopular.data.items.forEach(d => addOrUpdateDrama(map, d, 'popular'));
+                    if (feedPopular.data.page_info) {
+                        categoryState.popular.next = feedPopular.data.page_info.next || '';
+                        categoryState.popular.hasMore = !!feedPopular.data.page_info.has_more;
+                    }
+                }
+
+                if (feedFemale.data && Array.isArray(feedFemale.data.items)) {
+                    feedFemale.data.items.forEach(d => addOrUpdateDrama(map, d, 'female'));
+                    if (feedFemale.data.page_info) {
+                        categoryState.female.next = feedFemale.data.page_info.next || '';
+                        categoryState.female.hasMore = !!feedFemale.data.page_info.has_more;
+                    }
+                }
+
+                if (feedNew.data && Array.isArray(feedNew.data.items)) {
+                    feedNew.data.items.forEach(d => addOrUpdateDrama(map, d, 'new'));
+                    if (feedNew.data.page_info) {
+                        categoryState.new.next = feedNew.data.page_info.next || '';
+                        categoryState.new.hasMore = !!feedNew.data.page_info.has_more;
+                    }
+                }
+
+                if (feedMale.data && Array.isArray(feedMale.data.items)) {
+                    feedMale.data.items.forEach(d => addOrUpdateDrama(map, d, 'male'));
+                    if (feedMale.data.page_info) {
+                        categoryState.male.next = feedMale.data.page_info.next || '';
+                        categoryState.male.hasMore = !!feedMale.data.page_info.has_more;
+                    }
+                }
+
+                allDramas = Array.from(map.values());
+
+                // Set Hero Featured Banner
+                if (allDramas.length > 0) {
+                    setHeroDrama(allDramas[0]);
+                }
+
+                // Render Grid based on current genre filter
+                applyGenreFilter();
+
+            } catch (err) {
+                console.error('Lỗi nạp kho phim:', err);
+                grid.innerHTML = `<p style="color:#ef4444; padding:20px; text-align:center;">Lỗi nạp kho phim. Vui lòng đảm bảo server đang chạy (chạy <code>start_player.bat</code>).</p>`;
+            }
+        }
+
+        // ----------------------------------------------------
+        // HERO BANNER SETUP
+        // ----------------------------------------------------
+        function setHeroDrama(drama) {
+            featuredDrama = drama;
+            document.getElementById('heroTitle').textContent = drama.name;
+            document.getElementById('heroDesc').textContent = drama.desc || 'Bộ phim ngắn với cốt truyện hấp dẫn, kịch tính từng phút.';
+            document.getElementById('heroBg').src = drama.cover;
+            document.getElementById('heroEpCount').textContent = `📺 ${drama.episode_count || 30} tập`;
+            document.getElementById('heroTags').textContent = `🏷️ ${(drama.tags || []).slice(0, 3).join(' • ') || 'Hot Drama'}`;
+        }
+
+        function playCurrentHero() {
+            if (featuredDrama) {
+                openAndPlayDrama(featuredDrama.id);
+            }
+        }
+
+        // ----------------------------------------------------
+        // GENRE FILTERING & RENDERING
+        // ----------------------------------------------------
+        function selectGenre(genreKey) {
+            currentGenre = genreKey;
+            document.querySelectorAll('.genre-pill').forEach(btn => {
+                const onclickAttr = btn.getAttribute('onclick') || '';
+                btn.classList.toggle('active', onclickAttr.includes(`'${genreKey}'`));
+            });
+            showView('home');
+            applyGenreFilter();
+        }
+
+        function applyGenreFilter() {
+            const grid = document.getElementById('movieGrid');
+            const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            // Update title and subtitle
+            const meta = categoryMeta[currentGenre] || { title: 'Kho Phim', sub: 'Bấm vào phim để xem ngay' };
+            const titleEl = document.getElementById('gridTitle');
+            if (titleEl) {
+                titleEl.innerHTML = `${meta.title} <span id="itemCountText">...</span>`;
+            }
+            const subEl = document.getElementById('genreSubtitle');
+            if (subEl) {
+                subEl.textContent = meta.sub;
+            }
+
+            let list = [...allDramas];
+
+            // Filter by keyword if any
+            if (searchInput) {
+                list = list.filter(d => 
+                    d.name.toLowerCase().includes(searchInput) || 
+                    d.desc.toLowerCase().includes(searchInput) ||
+                    (d.tags || []).some(t => t.toLowerCase().includes(searchInput))
+                );
+            }
+
+            // Filter by category
+            if (['popular', 'rank', 'new', 'female', 'male', 'anime'].includes(currentGenre)) {
+                list = list.filter(d => d.categories && d.categories.has(currentGenre));
+            } else if (currentGenre === 'ceo') {
+                list = list.filter(d => hasKeywords(d, ['ceo', 'tổng tài', 'đại gia', 'tỷ phú', 'ông chủ', 'billionaire', 'tiểu thư', 'thiếu gia', 'chủ tịch', 'boss', 'hào môn']));
+            } else if (currentGenre === 'werewolf') {
+                list = list.filter(d => hasKeywords(d, ['sói', 'werewolf', 'vampire', 'cà rồng', 'alpha', 'luna', 'blood', 'huyết tộc', 'người sói']));
+            } else if (currentGenre === 'romance') {
+                list = list.filter(d => hasKeywords(d, ['tình', 'hôn nhân', 'yêu', 'cưới', 'romance', 'vợ', 'chồng', 'ngọt ngào', 'bạn trai', 'bạn gái']));
+            } else if (currentGenre === 'rebirth') {
+                list = list.filter(d => hasKeywords(d, ['tái sinh', 'trọng sinh', 'trả thù', 'trở lại', 'reborn', 'revenge', 'quyết đấu', 'nghịch tập', 'chiến thần']));
+            } else if (currentGenre === 'family') {
+                list = list.filter(d => hasKeywords(d, ['gia đình', 'mẹ', 'cha', 'con', 'chị gái', 'anh', 'mẹ kế', 'bà nội', 'gia tộc', 'huyết thống']));
+            }
+
+            filteredDramas = list;
+            currentPage = 1;
+            renderCurrentPage();
+        }
+
+        // ----------------------------------------------------
+        // LOAD MORE DRAMAS FOR CURRENT CATEGORY
+        // ----------------------------------------------------
+        async function loadMoreForCurrentCategory() {
+            const btn = document.getElementById('loadMoreBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Đang nạp...';
+            }
+
+            const beforeCount = allDramas.length;
+            const map = new Map();
+            allDramas.forEach(d => map.set(d.id, d));
+
+            try {
+                if (currentGenre === 'rank') {
+                    categoryState.rank.page = (categoryState.rank.page || 1) + 1;
+                    const res = await fetch(`${API_HOST}/api/rank?page=${categoryState.rank.page}&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({}));
+                    if (res.data && Array.isArray(res.data.items) && res.data.items.length > 0) {
+                        res.data.items.forEach(d => addOrUpdateDrama(map, d, 'rank'));
+                    } else {
+                        categoryState.rank.hasMore = false;
+                    }
+                } else if (categoryState[currentGenre]) {
+                    const st = categoryState[currentGenre];
+                    const nextToken = st.next || '';
+                    const url = `${API_HOST}/api/feed?module_key=${st.moduleKey}&next=${encodeURIComponent(nextToken)}&lang=${currentLanguage}`;
+                    const res = await fetch(url).then(r => r.json()).catch(() => ({}));
+                    if (res.data && Array.isArray(res.data.items) && res.data.items.length > 0) {
+                        res.data.items.forEach(d => addOrUpdateDrama(map, d, currentGenre));
+                        if (res.data.page_info) {
+                            st.next = res.data.page_info.next || '';
+                            st.hasMore = !!res.data.page_info.has_more;
+                        }
+                    } else {
+                        st.hasMore = false;
+                    }
+                } else {
+                    // For 'all' or keyword genres (ceo, romance, rebirth, family, etc.)
+                    // Fetch next page of both popular & female feeds + rank to expand entire library
+                    categoryState.rank.page = (categoryState.rank.page || 1) + 1;
+                    const popNext = categoryState.popular.next || '';
+                    const femNext = categoryState.female.next || '';
+
+                    const [rankRes, popRes, femRes] = await Promise.all([
+                        fetch(`${API_HOST}/api/rank?page=${categoryState.rank.page}&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                        fetch(`${API_HOST}/api/feed?module_key=1036&next=${encodeURIComponent(popNext)}&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({})),
+                        fetch(`${API_HOST}/api/feed?module_key=1039&next=${encodeURIComponent(femNext)}&lang=${currentLanguage}`).then(r => r.json()).catch(() => ({}))
+                    ]);
+
+                    if (rankRes.data && Array.isArray(rankRes.data.items)) {
+                        rankRes.data.items.forEach(d => addOrUpdateDrama(map, d, 'rank'));
+                    }
+                    if (popRes.data && Array.isArray(popRes.data.items)) {
+                        popRes.data.items.forEach(d => addOrUpdateDrama(map, d, 'popular'));
+                        if (popRes.data.page_info) categoryState.popular.next = popRes.data.page_info.next || '';
+                    }
+                    if (femRes.data && Array.isArray(femRes.data.items)) {
+                        femRes.data.items.forEach(d => addOrUpdateDrama(map, d, 'female'));
+                        if (femRes.data.page_info) categoryState.female.next = femRes.data.page_info.next || '';
+                    }
+                }
+
+                allDramas = Array.from(map.values());
+                const addedCount = allDramas.length - beforeCount;
+
+                if (addedCount > 0) {
+                    showToast(`✅ Đã nạp thêm ${addedCount} phim mới! (Tổng: ${allDramas.length} phim)`);
+                } else {
+                    showToast('ℹ️ Đã nạp hết phim mới trong danh mục này.');
+                }
+
+                applyGenreFilter();
+
+            } catch (err) {
+                console.error('Lỗi khi nạp thêm phim:', err);
+                showToast('❌ Không thể nạp thêm phim, vui lòng thử lại.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '🔄 Nạp Thêm Phim';
+                }
+            }
+        }
+
+        function renderCurrentPage() {
+            const grid = document.getElementById('movieGrid');
+            const totalItems = filteredDramas.length;
+            const totalPages = Math.ceil(totalItems / pageSize) || 1;
+
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            document.getElementById('itemCountText').textContent = `(${totalItems} phim)`;
+
+            if (totalItems === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color:var(--text-muted);">
+                    <p style="font-size:1.1rem; margin-bottom:8px;">Không tìm thấy phim nào phù hợp</p>
+                    <button class="btn btn-secondary" onclick="selectGenre('all')">Xem tất cả phim</button>
+                </div>`;
+                const pageWrap = document.getElementById('paginationWrap');
+                if (pageWrap) pageWrap.style.display = 'none';
+                return;
+            }
+
+            const pageWrap = document.getElementById('paginationWrap');
+            if (pageWrap) pageWrap.style.display = 'flex';
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalItems);
+            const pageList = filteredDramas.slice(startIndex, endIndex);
+
+            grid.innerHTML = pageList.map((d, idx) => {
+                const globalIndex = startIndex + idx;
+                return `
+                <div class="movie-card" onclick="openAndPlayDrama('${d.id}')">
+                    <div class="poster-box">
+                        <img class="poster-img" src="${d.cover || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400'}" alt="${escapeHtml(d.name)}" loading="lazy">
+                        <span class="poster-badge">#${globalIndex + 1}</span>
+                        <span class="ep-count-badge">${d.episode_count ? d.episode_count + ' Tập' : 'Full HD'}</span>
+                        <button class="action-btn-sm" style="position:absolute; top:8px; right:8px; z-index:10; padding:4px 8px; font-size:0.75rem; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);" onclick="shareMovie('${d.id}', '${escapeHtml(d.name)}', event)" title="Chia sẻ phim">🔗</button>
+                        <div class="play-hover-btn">▶</div>
+                    </div>
+                    <div class="movie-info">
+                        <h4 class="movie-title" title="${escapeHtml(d.name)}">${escapeHtml(d.name)}</h4>
+                        <div class="movie-tags">
+                            ${(d.tags || []).slice(0, 2).map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+
+            renderPaginationControls(totalPages, startIndex + 1, endIndex, totalItems);
+        }
+
+        function renderPaginationControls(totalPages, startItem, endItem, totalItems) {
+            const infoEl = document.getElementById('paginationInfo');
+            if (infoEl) {
+                infoEl.innerHTML = `Hiển thị <strong>${startItem} - ${endItem}</strong> trên <strong>${totalItems}</strong> phim (Trang <strong>${currentPage}</strong> / ${totalPages})`;
+            }
+
+            const container = document.getElementById('paginationButtons');
+            if (!container) return;
+
+            let html = '';
+
+            // Previous Button
+            html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">◀ Trước</button>`;
+
+            // Generate Page Numbers with smart ellipsis
+            const pages = [];
+            if (totalPages <= 7) {
+                for (let i = 1; i <= totalPages; i++) pages.push(i);
+            } else {
+                pages.push(1);
+                if (currentPage > 3) pages.push('...');
+                
+                const startRange = Math.max(2, currentPage - 1);
+                const endRange = Math.min(totalPages - 1, currentPage + 1);
+                for (let i = startRange; i <= endRange; i++) {
+                    if (!pages.includes(i)) pages.push(i);
+                }
+
+                if (currentPage < totalPages - 2) pages.push('...');
+                if (!pages.includes(totalPages)) pages.push(totalPages);
+            }
+
+            pages.forEach(p => {
+                if (p === '...') {
+                    html += `<span class="page-ellipsis">...</span>`;
+                } else {
+                    html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
+                }
+            });
+
+            // Next Button
+            html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Sau ▶</button>`;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(p) {
+            currentPage = p;
+            renderCurrentPage();
+            const gridHeader = document.getElementById('gridTitle');
+            if (gridHeader) {
+                gridHeader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function changePageSize(size) {
+            pageSize = parseInt(size);
+            currentPage = 1;
+            renderCurrentPage();
+        }
+
+        function hasKeywords(drama, words) {
+            const text = (drama.name + ' ' + drama.desc + ' ' + (drama.tags || []).join(' ')).toLowerCase();
+            return words.some(w => text.includes(w.toLowerCase()));
+        }
+
+        function filterBySearch() {
+            showView('home');
+            applyGenreFilter();
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            currentPage = 1;
+            const langSelector = document.getElementById('langSelector');
+            const selectedText = langSelector ? langSelector.options[langSelector.selectedIndex].text : lang;
+            showToast(`🌐 Đã chuyển sang: ${selectedText}`);
+            loadCatalog();
+        }
+
+        // ----------------------------------------------------
+        // SWITCH VIEW (HOME vs PLAYER)
+        // ----------------------------------------------------
+        function showView(viewName) {
+            document.getElementById('homeView').classList.toggle('active', viewName === 'home');
+            document.getElementById('playerView').classList.toggle('active', viewName === 'player');
+            document.getElementById('navHome').classList.toggle('active', viewName === 'home');
+            document.getElementById('navPlayer').classList.toggle('active', viewName === 'player');
+
+            if (viewName === 'home') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ----------------------------------------------------
+        // OPEN & PLAY DRAMA
+        // ----------------------------------------------------
+        async function openAndPlayDrama(seriesId, initialEpisode = 0) {
+            showView('player');
+            showToast('Đang mở phim...');
+            try {
+                const res = await fetch(`${API_HOST}/api/drama?id=${seriesId}&lang=${currentLanguage}`);
+                const json = await res.json();
+                if (!json.data || !json.data.info) {
+                    showToast('Không lấy được dữ liệu phim');
+                    return;
+                }
+
+                currentDrama = json.data.info;
+                currentEpisodeIndex = (initialEpisode >= 0 && currentDrama.episode_list && initialEpisode < currentDrama.episode_list.length) ? initialEpisode : 0;
+
+                // Update Info
+                document.getElementById('dramaTitle').textContent = currentDrama.name || 'Không rõ tên';
+                document.getElementById('infoTitle').textContent = currentDrama.name;
+                document.getElementById('infoDesc').textContent = currentDrama.desc || 'Chưa có tóm tắt';
+                document.getElementById('infoPoster').src = currentDrama.cover || '';
+                document.getElementById('infoTags').textContent = (currentDrama.content_tags || []).join(' • ');
+                document.getElementById('infoCast').textContent = currentDrama.performers ? 'Diễn viên: ' + currentDrama.performers.map(p => p.name).join(', ') : '';
+
+                // Render Episodes
+                renderEpisodesList(currentDrama.episode_list || []);
+
+                // Render Sidebar Recommendations
+                renderSideRecommendations();
+
+                // Play target episode
+                if (currentDrama.episode_list && currentDrama.episode_list.length > 0) {
+                    playEpisode(currentEpisodeIndex);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Lỗi tải phim: ' + err.message);
+            }
+        }
+
+        function renderEpisodesList(episodes) {
+            const list = document.getElementById('episodesList');
+            document.getElementById('totalEpCount').textContent = episodes.length;
+
+            list.innerHTML = episodes.map((ep, idx) => `
+                <button class="ep-btn ${idx === currentEpisodeIndex ? 'active' : ''}" id="ep-btn-${idx}" onclick="playEpisode(${idx})">
+                    ${idx + 1}
+                </button>
+            `).join('');
+        }
+
+        function renderSideRecommendations() {
+            const container = document.getElementById('sideRecommendList');
+            const others = allDramas.filter(d => !currentDrama || d.id !== currentDrama.id).slice(0, 8);
+            container.innerHTML = others.map(d => `
+                <div style="display:flex; gap:10px; background:var(--bg-elevated); padding:8px; border-radius:10px; cursor:pointer;" onclick="openAndPlayDrama('${d.id}')">
+                    <img src="${d.cover}" style="width:50px; height:68px; border-radius:6px; object-fit:cover;">
+                    <div style="display:flex; flex-direction:column; justify-content:center; overflow:hidden;">
+                        <span style="font-size:0.85rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(d.name)}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">${d.episode_count ? d.episode_count + ' Tập' : 'Đầy đủ'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ----------------------------------------------------
+        // PLAY EPISODE
+        // ----------------------------------------------------
+        function playEpisode(index) {
+            if (!currentDrama || !currentDrama.episode_list || !currentDrama.episode_list[index]) return;
+
+            currentEpisodeIndex = index;
+            const ep = currentDrama.episode_list[index];
+
+            // Sync URL query params without reloading
+            if (currentDrama && currentDrama.id) {
+                const newUrl = `${window.location.pathname}?drama=${currentDrama.id}&ep=${index}`;
+                window.history.replaceState(null, '', newUrl);
+            }
+
+            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`ep-btn-${index}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            document.getElementById('epIndicator').textContent = `Tập ${index + 1} / ${currentDrama.episode_list.length}`;
+            document.getElementById('dramaSubtitle').textContent = ep.name || `Tập ${index + 1}`;
+
+            let rawUrl = ep.external_audio_h264_m3u8 || ep.m3u8_url || ep.video_url;
+            if (!rawUrl && ep.external_audio_h265_m3u8) {
+                rawUrl = ep.external_audio_h265_m3u8;
+            }
+
+            if (!rawUrl) {
+                showToast('Tập này chưa có nguồn phát!');
+                return;
+            }
+
+            const playUrl = `${API_HOST}/proxy?url=${encodeURIComponent(rawUrl)}`;
+            loadVideoSource(playUrl, ep.subtitle_list);
+        }
+
+        function loadVideoSource(url, subtitles = []) {
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+
+            const audioSelect = document.getElementById('audioTrackSelect');
+            if (audioSelect) audioSelect.style.display = 'none';
+
+            populateSubtitles(subtitles);
+
+            if (Hls.isSupported() && url.includes('.m3u8')) {
+                hls = new Hls({
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                    backBufferLength: 60
+                });
+                hls.loadSource(url);
+                hls.attachMedia(video);
+
+                hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, (event, data) => {
+                    populateAudioTracks(data.audioTracks);
+                });
+
+                hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+                    populateAudioTracks(hls.audioTracks);
+                    video.play().catch(e => console.log('Autoplay prevented:', e));
+                });
+
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        switch (data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                hls.startLoad();
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                hls.recoverMediaError();
+                                break;
+                            default:
+                                hls.destroy();
+                                break;
+                        }
+                    }
+                });
+            } else {
+                video.src = url;
+                video.play().catch(e => console.log('Autoplay prevented:', e));
+            }
+        }
+
+        function populateAudioTracks(tracks) {
+            const select = document.getElementById('audioTrackSelect');
+            if (!select) return;
+            if (!tracks || tracks.length <= 1) {
+                select.style.display = 'none';
+                return;
+            }
+
+            select.style.display = 'inline-block';
+            select.innerHTML = '';
+
+            const langLabels = {
+                'vi-VN': '🇻🇳 Lồng tiếng Việt',
+                'vi': '🇻🇳 Lồng tiếng Việt',
+                'zh-CN': '🇨🇳 Giọng gốc Trung',
+                'zh': '🇨🇳 Giọng gốc Trung',
+                'en-US': '🇺🇸 Giọng gốc Anh',
+                'en': '🇺🇸 Giọng gốc Anh',
+                'ko-KR': '🇰🇷 Giọng Hàn',
+                'ja-JP': '🇯🇵 Giọng Nhật',
+                'th-TH': '🇹🇭 Giọng Thái'
+            };
+
+            tracks.forEach((track) => {
+                const opt = document.createElement('option');
+                opt.value = track.id;
+                const label = langLabels[track.name] || langLabels[track.lang] || `🎙️ ${track.name || ('Kênh ' + (track.id + 1))}`;
+                opt.textContent = label;
+                if (hls && hls.audioTrack === track.id) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
+            });
+        }
+
+        function changeAudioTrack(trackId) {
+            if (hls && trackId !== '') {
+                hls.audioTrack = parseInt(trackId);
+                const select = document.getElementById('audioTrackSelect');
+                const selectedText = select ? select.options[select.selectedIndex].text : '';
+                showToast(`Âm thanh: ${selectedText}`);
+            }
+        }
+
+        function populateSubtitles(subs) {
+            const select = document.getElementById('subSelect');
+            select.innerHTML = '<option value="">Phụ đề: Tắt</option>';
+            const tracks = video.querySelectorAll('track');
+            tracks.forEach(t => t.remove());
+
+            if (!subs || subs.length === 0) return;
+
+            subs.forEach((sub, i) => {
+                const subUrl = sub.vtt || sub.subtitle;
+                if (!subUrl) return;
+
+                const proxiedSub = `${API_HOST}/proxy?url=${encodeURIComponent(subUrl)}`;
+                const track = document.createElement('track');
+                track.kind = 'subtitles';
+                track.label = sub.display_name || sub.language;
+                track.srclang = sub.language;
+                track.src = proxiedSub;
+                video.appendChild(track);
+
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = sub.display_name || sub.language;
+                if (sub.language === 'vi-VN') opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function changeSubtitle(index) {
+            for (let i = 0; i < video.textTracks.length; i++) {
+                video.textTracks[i].mode = (i === parseInt(index)) ? 'showing' : 'disabled';
+            }
+        }
+
+        function changeSubSize(px) {
+            const styleTag = document.getElementById('dynamicSubStyle');
+            if (styleTag) {
+                styleTag.textContent = `
+                    ::cue, video::cue {
+                        font-size: ${px}px !important;
+                        line-height: 1.35 !important;
+                        background-color: rgba(0, 0, 0, 0.8) !important;
+                        color: #ffffff !important;
+                        font-weight: 600 !important;
+                        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+                        padding: 2px 6px !important;
+                        border-radius: 4px !important;
+                    }
+                `;
+            }
+        }
+
+        function changeSpeed(val) {
+            video.playbackRate = parseFloat(val);
+        }
+
+        function playNextEpisode() {
+            if (currentDrama && currentEpisodeIndex < currentDrama.episode_list.length - 1) {
+                playEpisode(currentEpisodeIndex + 1);
+            } else {
+                showToast('Đã đến tập cuối cùng!');
+            }
+        }
+
+        function playPrevEpisode() {
+            if (currentDrama && currentEpisodeIndex > 0) {
+                playEpisode(currentEpisodeIndex - 1);
+            }
+        }
+
+        function switchPlayerTab(name) {
+            document.querySelectorAll('.tab-btn').forEach((b, i) => {
+                b.classList.toggle('active', ['episodes', 'info', 'recommend'][i] === name);
+            });
+            document.getElementById('tabEpisodes').style.display = name === 'episodes' ? 'block' : 'none';
+            document.getElementById('tabInfo').style.display = name === 'info' ? 'block' : 'none';
+            document.getElementById('tabRecommend').style.display = name === 'recommend' ? 'block' : 'none';
+        }
+
+        function openCustomUrlModal() {
+            document.getElementById('customUrlModal').style.display = 'flex';
+            document.getElementById('customUrlInput').focus();
+        }
+
+        function closeCustomUrlModal() {
+            document.getElementById('customUrlModal').style.display = 'none';
+        }
+
+        function submitCustomUrl() {
+            const input = document.getElementById('customUrlInput').value.trim();
+            if (!input) return;
+            closeCustomUrlModal();
+
+            showView('player');
+            document.getElementById('dramaTitle').textContent = 'Video Tùy Chỉnh';
+            document.getElementById('dramaSubtitle').textContent = input;
+            document.getElementById('epIndicator').textContent = 'Tùy chỉnh';
+
+            const playUrl = input.includes('.m3u8') ? `${API_HOST}/proxy?url=${encodeURIComponent(input)}` : input;
+            loadVideoSource(playUrl);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastMessage');
+            toast.textContent = msg;
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
+
+        // ----------------------------------------------------
+        // SHARE FEATURES
+        // ----------------------------------------------------
+        function shareCurrentDrama() {
+            if (!currentDrama) {
+                showToast('Chưa có phim nào đang phát');
+                return;
+            }
+            const epNum = currentEpisodeIndex + 1;
+            const shareUrl = `${window.location.origin}/?drama=${currentDrama.id}&ep=${currentEpisodeIndex}`;
+            const title = `${currentDrama.name} - Tập ${epNum}`;
+            const text = `Xem phim ngắn "${currentDrama.name}" (Tập ${epNum}) cực cuốn trên ReelSnap!`;
+
+            if (navigator.share) {
+                navigator.share({ title, text, url: shareUrl }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showToast('✅ Đã sao chép link chia sẻ tập phim!');
+                }).catch(() => {
+                    prompt('Sao chép link chia sẻ:', shareUrl);
+                });
+            }
+        }
+
+        function shareMovie(dramaId, dramaTitle, event) {
+            if (event) event.stopPropagation();
+            const shareUrl = `${window.location.origin}/?drama=${dramaId}&ep=0`;
+            const title = dramaTitle || 'Phim ngắn ReelSnap';
+            const text = `Xem phim ngắn "${title}" cực hay trên ReelSnap!`;
+
+            if (navigator.share) {
+                navigator.share({ title, text, url: shareUrl }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showToast('✅ Đã sao chép link chia sẻ phim!');
+                }).catch(() => {
+                    prompt('Sao chép link chia sẻ:', shareUrl);
+                });
+            }
+        }
+
+        // ----------------------------------------------------
+        // DOWNLOAD FEATURES
+        // ----------------------------------------------------
+        function downloadCurrentMp4() {
+            if (!currentDrama || !currentDrama.episode_list || !currentDrama.episode_list[currentEpisodeIndex]) {
+                showToast('Vui lòng chọn tập phim để tải');
+                return;
+            }
+            const ep = currentDrama.episode_list[currentEpisodeIndex];
+            const rawUrl = ep.external_audio_h264_m3u8 || ep.m3u8_url || ep.video_url || ep.external_audio_h265_m3u8;
+            if (!rawUrl) {
+                showToast('Không tìm thấy link stream');
+                return;
+            }
+            const safeName = (currentDrama.name || 'phim').replace(/[^a-zA-Z0-9_\-\u00C0-\u1EF9]/g, '_');
+            const fileName = `${safeName}_tap_${currentEpisodeIndex + 1}.mp4`;
+            const audioParam = (hls && hls.audioTrack >= 0) ? `&audio=${hls.audioTrack}` : '';
+            const downloadUrl = `${API_HOST}/api/download?url=${encodeURIComponent(rawUrl)}&filename=${encodeURIComponent(fileName)}${audioParam}`;
+
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('📥 Đang ghép và tải video .mp4...');
+        }
+
+        init();
+    </script>
+</body>
+</html>

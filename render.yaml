@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: reelsnap-web-player
+    runtime: node
+    plan: free
+    buildCommand: echo "No build step required"
+    startCommand: npm start

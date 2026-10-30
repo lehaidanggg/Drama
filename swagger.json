@@ -1,0 +1,552 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ReelSnap Short Drama API",
+    "description": "Tài liệu API đầy đủ cho ứng dụng xem kịch ngắn ReelSnap (reverse-engineered từ com.zenith.reelsnap.shortdrama.reels).\nHỗ trợ đầy đủ các endpoints xác thực tài khoản ẩn danh, danh mục thể loại, bảng xếp hạng, tìm kiếm và lấy luồng stream HLS m3u8 cùng phụ đề WebVTT.",
+    "version": "2.3.60",
+    "contact": {
+      "name": "ReelSnap Web Team"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://apiv2.free-reels.com",
+      "description": "V2 Production API Server (Chính thức)"
+    },
+    {
+      "url": "https://api.mydramawave.com",
+      "description": "V1 Production API Server (Dự phòng)"
+    },
+    {
+      "url": "/",
+      "description": "Local / LAN Proxy & Player Server (Bypass CORS)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "OAuthSignatureAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Chuỗi xác thực sinh từ anonymous login: oauth_signature={md5(salt + auth_secret)},oauth_token={auth_key},ts={timestamp}"
+      },
+      "FirebaseIdHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "firebase-id",
+        "description": "Mặc định: 8d8531095094f6794fedbb722eb35921"
+      },
+      "AppNameHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "app-name",
+        "description": "com.freereels.app (v2) hoặc com.dramawave.app (v1)"
+      },
+      "AppVersionHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "app-version",
+        "description": "2.3.60"
+      },
+      "DeviceHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "device",
+        "description": "android"
+      }
+    },
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "example": 200 },
+          "message": { "type": "string", "example": "success" },
+          "data": { "type": "object" }
+        }
+      },
+      "AnonymousLoginRequest": {
+        "type": "object",
+        "required": ["device_id", "device_name", "sign"],
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID định danh thiết bị",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "device_name": {
+            "type": "string",
+            "description": "Tên máy khách",
+            "example": "Google Pixel 8"
+          },
+          "sign": {
+            "type": "string",
+            "description": "MD5(salt + device_id) với salt = '8IAcbWyCsVhYv82S2eofRqK1DF3nNDAv&'",
+            "example": "a1b2c3d4e5f60718293a4b5c6d7e8f90"
+          }
+        }
+      },
+      "AnonymousLoginResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "example": 200 },
+          "message": { "type": "string", "example": "success" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "success": { "type": "boolean", "example": true },
+              "user_id": { "type": "integer", "example": 76021966335 },
+              "name": { "type": "string", "example": "Khách" },
+              "icon": { "type": "string", "example": "https://static-v1.mydramawave.com/avatar/fr_default_guest_dark.png" },
+              "user_type": { "type": "integer", "example": 0 },
+              "auth_key": { "type": "string", "example": "e7GuWNXeJcV8fHcG7rzCceSqbG9XyMif" },
+              "auth_secret": { "type": "string", "example": "yWRSAiJt3GQrSYt02nvBbZxR3uT78G6s" }
+            }
+          }
+        }
+      },
+      "SubtitleItem": {
+        "type": "object",
+        "properties": {
+          "language": { "type": "string", "example": "vi-VN" },
+          "type": { "type": "string", "example": "normal" },
+          "subtitle": { "type": "string", "description": "URL phụ đề định dạng .srt", "example": "https://video-v6.mydramawave.com/vt/25011/sub.srt" },
+          "vtt": { "type": "string", "description": "URL phụ đề định dạng WebVTT .vtt", "example": "https://video-v81.mydramawave.com/ut/25011/sub.vtt" },
+          "display_name": { "type": "string", "example": "Việt" }
+        }
+      },
+      "EpisodeItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "sDpJliSKQX" },
+          "name": { "type": "string", "example": "Tập 1" },
+          "index": { "type": "integer", "example": 1 },
+          "duration": { "type": "integer", "description": "Thời lượng tính bằng giây", "example": 158 },
+          "cover": { "type": "string", "example": "https://static-v1.mydramawave.com/cover/ep1.jpg" },
+          "unlock": { "type": "boolean", "example": true },
+          "m3u8_url": { "type": "string", "description": "URL HLS m3u8 tiêu chuẩn", "example": "" },
+          "external_audio_h264_m3u8": { "type": "string", "description": "URL stream HLS codec H.264 (khuyên dùng)", "example": "https://video-v6.mydramawave.com/vt/.../h264.m3u8" },
+          "external_audio_h265_m3u8": { "type": "string", "description": "URL stream HLS codec H.265 (HEVC)", "example": "https://video-v7.mydramawave.com/vt/.../h265.m3u8" },
+          "video_url": { "type": "string", "description": "URL file video trực tiếp MP4 (nếu có)", "example": "" },
+          "subtitle_list": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SubtitleItem" }
+          },
+          "audio": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["vi-VN", "en-US", "zh-CN"]
+          },
+          "sprite_vtt_url": { "type": "string", "example": "https://video-v81.mydramawave.com/vt/video-sprite/22100/1/sprite_v1.vtt" }
+        }
+      },
+      "DramaDetail": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "hZBKvy7clk" },
+          "name": { "type": "string", "example": "Bond a Beast? I Bonded a Goddess" },
+          "desc": { "type": "string", "example": "Luke Vane, a despised janitor mocked for being powerless at Asgard Academy..." },
+          "cover": { "type": "string", "example": "https://static-v1.mydramawave.com/cover/drama.jpg" },
+          "episode_count": { "type": "integer", "example": 58 },
+          "content_tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["Romance", "Fantasy", "Super Power"]
+          },
+          "performers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string", "example": "John Doe" },
+                "avatar": { "type": "string" }
+              }
+            }
+          },
+          "episode_list": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/EpisodeItem" }
+          }
+        }
+      },
+      "DramaListItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "hZBKvy7clk" },
+          "name": { "type": "string", "example": "Lộ Diện Thiếu Gia" },
+          "desc": { "type": "string", "example": "Tóm tắt phim ngắn..." },
+          "cover": { "type": "string", "example": "https://static-v1.mydramawave.com/cover/poster.jpg" },
+          "episode_count": { "type": "integer", "example": 40 },
+          "series_tag": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["Tổng tài", "Kịch tính", "Lãng mạn"]
+          }
+        }
+      },
+      "PageInfo": {
+        "type": "object",
+        "properties": {
+          "next": { "type": "string", "example": "2" },
+          "has_more": { "type": "boolean", "example": true }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/frv2-api/anonymous/login": {
+      "post": {
+        "tags": ["1. Xác thực (Authentication)"],
+        "summary": "Đăng nhập ẩn danh lấy mã xác thực OAuth",
+        "description": "Tạo phiên làm việc cho máy khách không cần tài khoản. Trả về auth_key và auth_secret dùng để ký chữ ký Authorization cho các request tiếp theo.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AnonymousLoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Đăng nhập thành công",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AnonymousLoginResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/drama/info_v2": {
+      "get": {
+        "tags": ["2. Chi Tiết Phim & Phát Video (Playback)"],
+        "summary": "Lấy chi tiết bộ phim và danh sách tập phim (kèm link stream m3u8)",
+        "description": "API cốt lõi để phát video. Cung cấp danh sách tập, link HLS m3u8 (H.264/H.265) và toàn bộ phụ đề WebVTT (.vtt) đa ngôn ngữ.",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "parameters": [
+          {
+            "name": "series_id",
+            "in": "query",
+            "required": true,
+            "description": "ID định danh bộ phim",
+            "schema": { "type": "string", "example": "hZBKvy7clk" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thông tin chi tiết bộ phim",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "success" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "info": { "$ref": "#/components/schemas/DramaDetail" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/homepage/v2/rank": {
+      "post": {
+        "tags": ["3. Trang Chủ & Khám Phá (Homepage)"],
+        "summary": "Bảng xếp hạng phim thịnh hành (Top Rank)",
+        "description": "Lấy danh sách các bộ phim có lượt xem và điểm hot cao nhất trên nền tảng.",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "page": { "type": "integer", "example": 1 },
+                  "page_size": { "type": "integer", "example": 20 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Danh sách bảng xếp hạng",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "success" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/DramaListItem" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/search/hot-list-v2": {
+      "post": {
+        "tags": ["4. Tìm Kiếm & Khám Phá (Search)"],
+        "summary": "Danh sách phim được tìm kiếm nhiều nhất (Hot List)",
+        "description": "Trả về kho phim đang được quan tâm nhất với phân trang.",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "page": { "type": "integer", "example": 1 },
+                  "page_size": { "type": "integer", "example": 30 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Danh sách phim hot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "success" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "page_info": { "$ref": "#/components/schemas/PageInfo" },
+                        "items": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/DramaListItem" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/search/drama": {
+      "post": {
+        "tags": ["4. Tìm Kiếm & Khám Phá (Search)"],
+        "summary": "Tìm kiếm phim theo từ khóa",
+        "description": "Tìm kiếm phim theo tên, diễn viên hoặc thể loại.",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["keyword"],
+                "properties": {
+                  "keyword": { "type": "string", "example": "Tổng tài" },
+                  "next": { "type": "string", "example": "" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kết quả tìm kiếm",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "integer", "example": 200 },
+                    "message": { "type": "string", "example": "success" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "page_info": { "$ref": "#/components/schemas/PageInfo" },
+                        "items": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/DramaListItem" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/homepage/v3/tab/list": {
+      "get": {
+        "tags": ["3. Trang Chủ & Khám Phá (Homepage)"],
+        "summary": "Danh sách tab thể loại và danh mục phim",
+        "description": "Lấy cây danh mục gồm: Phổ biến, Mới nhất, Thể loại (CEO, Người Sói, Hôn Nhân, Trọng Sinh...), Hoạt hình.",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Cây danh mục phim",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/homepage/v2/tab/index": {
+      "get": {
+        "tags": ["3. Trang Chủ & Khám Phá (Homepage)"],
+        "summary": "Lấy nội dung danh sách phim theo tab cụ thể",
+        "description": "Lấy danh sách các block phim của từng tab (ví dụ: tab_key=503 cho Phổ biến, tab_key=505 cho Mới nhất).",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "parameters": [
+          {
+            "name": "tab_key",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "example": "503" }
+          },
+          {
+            "name": "position_index",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "example": 10000 }
+          },
+          {
+            "name": "rec_trigger",
+            "in": "query",
+            "schema": { "type": "integer", "example": 1 }
+          },
+          {
+            "name": "user_new_theater",
+            "in": "query",
+            "schema": { "type": "boolean", "example": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Nội dung tab",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/homepage/v2/tab/feed": {
+      "post": {
+        "tags": ["3. Trang Chủ & Khám Phá (Homepage)"],
+        "summary": "Tải thêm luồng phim cho tab (Infinite Scroll Feed)",
+        "description": "Tải thêm phim khi người dùng cuộn xuống dưới cùng của tab.",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["module_key"],
+                "properties": {
+                  "module_key": { "type": "string", "example": "1036" },
+                  "next": { "type": "string", "example": "" },
+                  "rec_trigger": { "type": "integer", "example": 1 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Danh sách phim tải thêm",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frv2-api/coming-soon/list": {
+      "get": {
+        "tags": ["3. Trang Chủ & Khám Phá (Homepage)"],
+        "summary": "Danh sách phim sắp ra mắt (Coming Soon)",
+        "description": "Lấy danh sách các phim chuẩn bị phát hành.",
+        "security": [{ "OAuthSignatureAuth": [] }],
+        "parameters": [
+          {
+            "name": "next",
+            "in": "query",
+            "schema": { "type": "string", "example": "" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách phim sắp chiếu",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/proxy": {
+      "get": {
+        "tags": ["5. Tiện ích Proxy Local (CORS Bypass)"],
+        "summary": "Proxy stream video HLS (.m3u8, .ts, .vtt) hỗ trợ CORS",
+        "description": "Endpoint của server local Node.js giúp trình duyệt phát trực tiếp video từ CDN mà không bị chặn bởi chính sách CORS của trình duyệt.",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "description": "URL gốc của file m3u8, video ts hoặc subtitle vtt",
+            "schema": { "type": "string", "example": "https://video-v6.mydramawave.com/vt/.../h264.m3u8" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Nội dung file stream đã được cấu hình Access-Control-Allow-Origin: *",
+            "content": {
+              "application/vnd.apple.mpegurl": {},
+              "video/mp2t": {},
+              "text/vtt": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
